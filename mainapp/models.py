@@ -4,6 +4,9 @@ from django.db import models
 # Create your models here.
 
 class ProductCategory(models.Model):
+    class Meta:
+        verbose_name_plural = 'Categories'
+
     name = models.CharField(max_length=64, unique=True)
     description = models.TextField(blank=True, null=True)
 
@@ -12,6 +15,9 @@ class ProductCategory(models.Model):
 
 
 class Products(models.Model):
+    class Meta:
+        verbose_name_plural = 'Products'
+
     name = models.CharField(max_length=128)
     image = models.ImageField(upload_to='products_images', blank=True)
     description = models.TextField(blank=True, null=True)

@@ -3,6 +3,7 @@ import os
 from django.shortcuts import render
 from datetime import datetime
 
+from mainapp.models import Products, ProductCategory
 
 now = datetime.today().strftime('%H:%M')
 # Create your views here.
@@ -21,9 +22,12 @@ def index(request):
 
 
 def products(request):
+    products = Products.objects.all()
+    categories = ProductCategory.objects.all()
+
     content = {'title': 'GeekShop - Каталог',
-               'categories': read_json('fixtures/categories.json'),
-               'products': read_json('fixtures/goods.json'),
+               'categories': categories,
+               'products': products,
                'time': now}
 
     return render(request, 'mainapp/products.html', content)
