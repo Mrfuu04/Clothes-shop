@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('mainapp.urls', namespace='products')),
     path('', include('authapp.urls', namespace='login')),
     path('', include('authapp.urls', namespace='register')),
+    path('', include('authapp.urls', namespace='logout')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
