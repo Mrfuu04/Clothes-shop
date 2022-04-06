@@ -14,7 +14,10 @@ def profile(request):
         form = UserProfileForm(instance=request.user, data=request.POST, files=request.FILES)
         if form.is_valid():
             form.save()
-
+            messages.success(request, 'Изменения успешно внесены!')
+        else:
+            errors = [error for error in form.errors.values()]
+            messages.error(request, *errors)
 
     context = {
         'title': 'Profile',

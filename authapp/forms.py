@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django import forms
 from django.core.exceptions import ValidationError
@@ -62,11 +63,18 @@ class UserProfileForm(UserChangeForm):
             field.widget.attrs['class'] = 'form-control py-1'
         self.fields['avatar'].widget.attrs['class'] = 'custom_file-input'
 
+
+    def clean_last_name(self):
+        data = self.cleaned_data['last_name']
+        if len(data) > 15:
+            raise ValidationError('Слишком длинная фамилия!')
+        return data
+
     def clean_avatar(self):
         data = self.cleaned_data['avatar']
-        try:
-            if data.image.format not in ['JPEG', 'PNG']:
-                raise ValidationError('Неверный формат картинки')
-        except:
-            pass
+        if data is None:
+            return data
+        if data.image.format not in ['JPEG']:
+            raise ValidationError('Неверный формат картинки')
         return data
+
