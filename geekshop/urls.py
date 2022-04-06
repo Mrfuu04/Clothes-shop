@@ -28,6 +28,8 @@ urlpatterns = [
     path('', include('authapp.urls', namespace='register')),
     path('', include('authapp.urls', namespace='logout')),
     path('', include('authapp.urls', namespace='profile')),
+    path('', include('basketapp.urls', namespace='basket_add')),
+    path('', include('basketapp.urls', namespace='basket_remove')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

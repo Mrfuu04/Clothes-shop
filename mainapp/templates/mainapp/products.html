@@ -19,7 +19,7 @@
             <h1 class="my-4">GeekShop</h1>
             <div class="list-group">
                 {% for category in categories %}
-                    <a href="#" class="list-group-item">{{category.name}}</a>
+                    <a href="" class="list-group-item">{{category.name}}</a>
                 {% endfor %}
             </div>
 
@@ -73,7 +73,7 @@
                                 <p class="card-text">{{good.definition}}</p>
                             </div>
                             <div class="card-footer text-center">
-                                <button type="button" class="btn btn-outline-success">Отправить в корзину</button>
+                                <a href="{% url 'basketapp:basket_add' good.id %}" class="btn btn-outline-success">Отправить в корзину</a>
                             </div>
                         </div>
                     </div>
