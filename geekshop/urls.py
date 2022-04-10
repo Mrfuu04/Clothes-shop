@@ -30,6 +30,7 @@ urlpatterns = [
     path('', include('authapp.urls', namespace='profile')),
     path('', include('basketapp.urls', namespace='basket_add')),
     path('', include('basketapp.urls', namespace='basket_remove')),
+    path('basket/', include('basketapp.urls', namespace='basket_edit')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
