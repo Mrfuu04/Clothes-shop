@@ -18,7 +18,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from mainapp.views import index, products
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +30,7 @@ urlpatterns = [
     path('', include('basketapp.urls', namespace='basket_add')),
     path('', include('basketapp.urls', namespace='basket_remove')),
     path('basket/', include('basketapp.urls', namespace='basket_edit')),
+    path('adminapp/', include('adminapp.urls', namespace='adminapp')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
