@@ -1,46 +1,48 @@
 {% extends 'adminapp/base.html' %}
     {% block content %}
-    <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid">
-                <h1 class="mt-4">Редактирование пользователя | valeriy</h1>
+                <h1 class="mt-4 ml-3">{{ title }}</h1>
                 <div class="card-body">
-                    <form action="">
+                    <form action="{% url 'adminapp:user_update' id %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
                         <div class="form-row">
-                            <div class="col-lg-6">
+                            <div class="col-lg-5">
                                 <div class="form-group">
-                                    <label class="small mb-1" for="inputFirstName">Имя</label>
-                                    <input class="form-control py-4" id="inputFirstName" type="text" value="Николай"/>
+                                    <label class="small mb-1" for="{{ form.first_name.id_for_label }}">Имя</label>
+                                    {{ form.first_name }}
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-5">
                                 <div class="form-group">
-                                    <label class="small mb-1" for="inputLastName">Фамилия</label>
-                                    <input class="form-control py-4" id="inputLastName" type="text" value="Нагорный"/>
+                                    <label class="small mb-1" for="{{ form.last_name.id_for_label }}">Фамилия</label>
+                                    {{ form.last_name }}
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    <label class="small mb-1" for="{{ form.age.id_for_label }}">Возраст</label>
+                                    {{ form.age }}
                                 </div>
                             </div>
                         </div>
                         <div class="form-row mb-2">
                             <div class="col-lg-12">
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="userAvatar" size="50">
-                                    <label class="custom-file-label" for="userAvatar">Выберите изображение</label>
+                                    <input type="file" class="{{ form.avatar }}" id="userAvatar" size="50">
+                                    <label class="custom-file-label" for="{{ form.avatar.id_for_label }}">Выберите изображение</label>
                                 </div>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-lg-6">
-                                <label class="small mb-1" for="inputUsername">Имя пользователя</label>
-                                <input class="form-control py-4" id="inputUsername" type="text"
-                                       aria-describedby="usernameHelp"
-                                       value="nikolay"/>
+                                <label class="small mb-1" for="{{ form.username.id_for_label }}">Имя пользователя</label>
+                                {{ form.username }}
                             </div>
                             <div class="col-lg-6">
-                                <label class="small mb-1" for="inputEmailAddress">Адрес электронной
+                                <label class="small mb-1" for="{{ form.email.id_for_label }}">Адрес электронной
                                     почты</label>
-                                <input class="form-control py-4" id="inputEmailAddress" type="email"
-                                       aria-describedby="emailHelp"
-                                       value="isp06@mail.ru"/>
+                                {{ form.email }}
                             </div>
                         </div>
                         <div class="form-row">
@@ -50,19 +52,14 @@
                         </div>
                     </form>
                     <div class="row">
-                        <div class="col-lg-12" style="margin-top: 33px;">
+                        <div class="col-lg-12" style="margin-top: 10px;">
+                            <form action="{% url 'adminapp:user_delete' id %}" method="post">
+                                {% csrf_token %}
                             <input class="btn btn-danger btn-block" type="submit" value="Удалить">
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
-        <footer class="py-4 bg-light mt-auto">
-            <div class="container-fluid">
-                <div class="d-flex align-items-center justify-content-between small">
-                    <div class="text-muted">Copyright &copy; GeekShop 2021</div>
-                </div>
-            </div>
-        </footer>
-    </div>
     {% endblock %}

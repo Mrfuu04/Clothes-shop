@@ -74,7 +74,7 @@ class UserProfileForm(UserChangeForm):
         data = self.cleaned_data['avatar']
         if data is None:
             return data
-        if data.image.format not in ['JPEG']:
+        if data.image.format not in ['JPEG', 'PNG']:
             raise ValidationError('Неверный формат картинки')
         return data
 

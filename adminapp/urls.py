@@ -7,6 +7,6 @@ urlpatterns = [
     path('', index, name='index'),
     path('users/', admin_show_users, name='users'),
     path('user_create/', admin_create_user, name='user_create'),
-    path('user_delete/', admin_delete_user, name='user_delete'),
-    path('user_update/', admin_update_user, name='user_update'),
+    path('user_delete/<int:id>', admin_delete_user, name='user_delete'),
+    path('user_update/<int:id>', admin_update_user, name='user_update'),
 ]

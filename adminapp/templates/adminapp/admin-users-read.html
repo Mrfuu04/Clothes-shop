@@ -1,6 +1,6 @@
 {% extends 'adminapp/base.html' %}
     {% block content %}
-        <div id="layoutSidenav_content">
+
         <main>
             <div class="container-fluid">
                 <h1 class="mt-4">Пользователи</h1>
@@ -33,40 +33,37 @@
                                 </tr>
                                 </tfoot>
                                 <tbody>
+                                {% for user in users %}
                                 <tr>
-                                    <td><a href="#" style="color: dodgerblue">test</a></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="text-center"><i class="fas fa-check-circle"></i></td>
-                                    <td class="text-center"><i class="fas fa-check-circle"></i></td>
-                                </tr>
-                                <tr>
-                                    <td><a href="admin-users-update-delete.html" style="color: dodgerblue">nikolay</a></td>
-                                    <td>Nikolay</td>
-                                    <td>Nagornyy</td>
-                                    <td>isp06.ru</td>
+                                    <td><a href="{% url 'adminapp:user_update' user.id %}" style="color: dodgerblue">{{ user.username }}</a></td>
+                                    <td>{{ user.first_name }}</td>
+                                    <td>{{ user.last_name }}</td>
+                                    <td>{{ user.email }}</td>
+
+                                    {% if user.is_staff %}
+                                    <td class="text-center"><i class="fas fa-check"></i></td>
+                                    {% else %}
                                     <td class="text-center"><i class="fas fa-times-circle"></i></td>
+                                    {% endif %}
+
+                                    {% if user.is_active %}
+                                    <td class="text-center"><i class="fas fa-check"></i></td>
+                                    {% else %}
                                     <td class="text-center"><i class="fas fa-times-circle"></i></td>
+                                    {% endif %}
                                 </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="admin-users-create.html">
+                        <a href="{% url 'adminapp:user_create' %}">
                             <button class="btn btn-success">Создать пользователя</button>
                         </a>
                     </div>
                 </div>
             </div>
         </main>
-        <footer class="py-4 bg-light mt-auto">
-            <div class="container-fluid">
-                <div class="d-flex align-items-center justify-content-between small">
-                    <div class="text-muted">Copyright &copy; GeekShop 2021</div>
-                </div>
-            </div>
-        </footer>
-    </div>
+
     {% endblock %}
