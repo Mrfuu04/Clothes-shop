@@ -3,7 +3,7 @@ from django import forms
 from django.forms import ModelForm
 
 from authapp.models import User
-from mainapp.models import ProductCategory
+from mainapp.models import ProductCategory, Products
 
 
 class UserAdminRegisterForm(UserCreationForm):
@@ -58,6 +58,17 @@ class AdminCategoryChange(ModelForm):
             field.widget.attrs['class'] = 'form-control py-4'
 
 
+class AdminProductCreate(ModelForm):
+
+    class Meta:
+        model = Products
+        fields = ('name', 'image', 'description', 'price', 'quantity', 'category', 'is_active')
+
+    def __init__(self, *args, **kwars):
+        super(AdminProductCreate, self).__init__(*args, **kwars)
 
 
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control py-2'
 
+        self.fields['image'].widget.attrs['class'] = 'custom_file-input'

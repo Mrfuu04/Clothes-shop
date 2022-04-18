@@ -1,0 +1,72 @@
+{% extends 'adminapp/base.html' %}
+{% block content %}
+<main>
+    <div class="container-fluid">
+        <h1 class="mt-4 ml-3">{{ title }}</h1>
+        <div class="card-body">
+            <form action="{% url 'adminapp:admin_product_update' product_select.id %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="small mb-1" for="{{ form.name.id_for_label }}">Название</label>
+                        {{ form.name }}
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label class="small mb-1" for="{{ form.price.id_for_label }}">Цена</label>
+                        {{ form.price }}
+                    </div>
+                </div>
+                    <div class="col-lg-2">
+                    <label class="small mb-1" for="{{ form.category.id_for_label }}">Категория</label>
+                    {{ form.category }}
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label class="small mb-1" for="{{ form.quantity.id_for_label }}">Количество</label>
+                        {{ form.quantity }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                            <label class="custom-file-label-label" for="{{ form.image.id_for_label }}">Фото</label>
+                        {{ form.image }}
+                    </div>
+                </div>
+                <div class="col-lg-1">
+                        <label class="small mb-1" for="{{ form.is_active.id_for_label }}">Активный</label>
+                        {{ form.is_active }}
+                    </div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="small mb-1" for="{{ form.description.id_for_label }}">Описание</label>
+                        {{ form.description }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-12" style="margin-top: 33px;">
+                    <input class="btn btn-info btn-block" type="submit" value="Сохранить">
+                </div>
+            </div>
+        </form>
+            <div class="row">
+                <div class="col-lg-12" style="margin-top: 10px;">
+                    <form action="{% url 'adminapp:admin_product_delete' product_select.id %}" method="post">
+                        {% csrf_token %}
+                        <input class="btn btn-danger btn-block" type="submit" value="Удалить">
+                    </form>
+                </div>
+            </div>
+    </div>
+
+        </div>
+    </div>
+</main>
+{% endblock %}

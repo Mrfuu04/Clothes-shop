@@ -2,14 +2,14 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-
 # Create your views here.
 from django.urls import reverse
 from django.contrib.auth.decorators import user_passes_test
 
-from adminapp.forms import UserAdminRegisterForm, AdminUserChange, AdminCategoryChange
+from adminapp.forms import UserAdminRegisterForm, AdminUserChange, AdminCategoryChange, \
+    AdminProductCreate
 from authapp.models import User
-from mainapp.models import ProductCategory
+from mainapp.models import ProductCategory, Products
 
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/login')
@@ -120,7 +120,6 @@ def admin_category_delete(request, id):
     return HttpResponseRedirect(reverse('adminapp:categories'))
 
 
-
 @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 def admin_category_create(request):
     if request.method == 'POST':
@@ -140,3 +139,64 @@ def admin_category_create(request):
     }
 
     return render(request, 'adminapp/admin_category_create.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/login')
+def admin_products_show(request):
+    context = {
+        'title': 'Товары',
+        'products': Products.objects.all(),
+    }
+
+    return render(request, 'adminapp/admin_products_show.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/login')
+def admin_product_create(request):
+    if request.method == 'POST':
+        form = AdminProductCreate(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('adminapp:admin_products_show'))
+        else:
+            errors = [error for error in form.errors.values()]
+            messages.error(request, *errors)
+    else:
+        form = AdminProductCreate()
+
+    context = {
+        'title': 'Создание товара',
+        'form': form,
+    }
+
+    return render(request, 'adminapp/admin_products_create.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/login')
+def admin_product_change(request, id):
+    product_select = Products.objects.get(id=id)
+    if request.method == 'POST':
+        form = AdminProductCreate(instance=product_select, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('adminapp:admin_products_show'))
+        else:
+            print(form.errors)
+    else:
+        form = AdminProductCreate(instance=product_select)
+
+    context = {
+        'title': 'Изменение товара',
+        'form': form,
+        'product_select': product_select
+    }
+    return render(request, 'adminapp/admin_products_update-delete.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/login')
+def admin_product_delete(request, id):
+    product_select = Products.objects.get(id=id)
+    product_select.is_active = False
+    product_select.save()
+
+    return HttpResponseRedirect(reverse('adminapp:admin_products_show'))
