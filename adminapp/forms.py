@@ -1,7 +1,9 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
+from django.forms import ModelForm
 
 from authapp.models import User
+from mainapp.models import ProductCategory
 
 
 class UserAdminRegisterForm(UserCreationForm):
@@ -40,3 +42,22 @@ class AdminUserChange(UserChangeForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
         self.fields['avatar'].widget.attrs['class'] = 'custom_file-input'
+
+
+class AdminCategoryChange(ModelForm):
+
+    class Meta:
+        model = ProductCategory
+        fields = ('name', 'description', 'is_active')
+
+    def __init__(self, *args, **kwargs):
+        super(AdminCategoryChange, self).__init__(*args, **kwargs)
+
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control py-4'
+
+
+
+
+
