@@ -61,14 +61,14 @@
                 {% for good in products %}
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="card h-100">
-                            <a href="#">
+                            <a href="{% url 'mainapp:product_detail' good.id %}">
                                 <img class="card-img-top"
                                      src="/media/{{good.image}}"
                                      alt="">
                             </a>
                             <div class="card-body">
                                 <h4 class="card-title">
-                                    <a href="#">{{good.name}}</a>
+                                    <a href="{% url 'mainapp:product_detail' good.id %}">{{good.name}}</a>
                                 </h4>
                                 <h5>{{good.price}} руб.</h5>
                                 <p class="card-text">{{good.definition}}</p>

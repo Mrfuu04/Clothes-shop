@@ -5,6 +5,8 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 from datetime import datetime
 
+from django.views.generic import DetailView
+
 from mainapp.models import Products, ProductCategory
 
 now = datetime.today().strftime('%H:%M')
@@ -48,3 +50,7 @@ def products(request, category_id=None, page=1):
 
     return render(request, 'mainapp/products.html', content)
 
+
+class ProductDetail(DetailView):
+    model = Products
+    template_name = 'mainapp/product_detail.html'
