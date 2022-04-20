@@ -1,5 +1,7 @@
 import json
 import os
+
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 from datetime import datetime
 
@@ -21,18 +23,27 @@ def index(request):
     return render(request, 'mainapp/index.html', content)
 
 
-def products(request, category_id=None):
+def products(request, category_id=None, page=1):
 
     if category_id:
         products = Products.objects.filter(category=category_id)
     else:
         products = Products.objects.all()
 
+    pagination = Paginator(products, per_page=3)
+    try:
+        product_pagination = pagination.page(page)
+    except PageNotAnInteger:
+        product_pagination = pagination.page(1)
+    except EmptyPage:
+        product_pagination = pagination.page(pagination.num_pages)
+
+
     categories = ProductCategory.objects.all()
 
     content = {'title': 'GeekShop - Каталог',
                'categories': categories,
-               'products': products,
+               'products': product_pagination,
                'time': now}
 
     return render(request, 'mainapp/products.html', content)
