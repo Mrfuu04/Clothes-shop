@@ -21,8 +21,13 @@ def index(request):
     return render(request, 'mainapp/index.html', content)
 
 
-def products(request):
-    products = Products.objects.all()
+def products(request, category_id=None):
+
+    if category_id:
+        products = Products.objects.filter(category=category_id)
+    else:
+        products = Products.objects.all()
+
     categories = ProductCategory.objects.all()
 
     content = {'title': 'GeekShop - Каталог',
