@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <h1 class="mt-4 ml-3">{{ title }}</h1>
                 <div class="card-body">
-                    <form action="{% url 'adminapp:user_update' id %}" method="post" enctype="multipart/form-data">
+                    <form action="{% url 'adminapp:user_update' user.id %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="form-row">
                             <div class="col-lg-5">
@@ -19,10 +19,16 @@
                                     {{ form.last_name }}
                                 </div>
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-lg-1">
                                 <div class="form-group">
                                     <label class="small mb-1" for="{{ form.age.id_for_label }}">Возраст</label>
                                     {{ form.age }}
+                                </div>
+                            </div>
+                            <div class="col-lg-1">
+                                <div class="form-group">
+                                    <label class="small mb-1" for="{{ form.is_active.id_for_label }}">Активность</label>
+                                    {{ form.is_active }}
                                 </div>
                             </div>
                         </div>
@@ -53,7 +59,7 @@
                     </form>
                     <div class="row">
                         <div class="col-lg-12" style="margin-top: 10px;">
-                            <form action="{% url 'adminapp:user_delete' id %}" method="post">
+                            <form action="{% url 'adminapp:user_delete' user.id %}" method="post">
                                 {% csrf_token %}
                             <input class="btn btn-danger btn-block" type="submit" value="Удалить">
                             </form>
