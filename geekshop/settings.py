@@ -138,3 +138,4 @@ MEDIA_ROOT = BASE_DIR/'media'
 
 # User
 AUTH_USER_MODEL = 'authapp.User'
+LOGIN_REDIRECT_URL = 'mainapp:index'
