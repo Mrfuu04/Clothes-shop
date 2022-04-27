@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django import forms
 from django.core.exceptions import ValidationError
+import hashlib
 
 from authapp.models import User
 
@@ -30,6 +31,25 @@ class UserRegisterForm(UserCreationForm):
         super(UserRegisterForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+
+
+    def save(self, commit=True):
+        user = super(UserRegisterForm, self).save()
+        user.is_active = False
+        salt = hashlib.md5(str(user.username).encode('utf-8')).hexdigest()
+        user.activation_key = hashlib.md5(str(user.email+salt).encode('utf-8')).hexdigest()
+        user.save()
+        return user
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if User.objects.filter(email=cleaned_data.get('email')).exists():
+            raise ValidationError("Почта уже существует!")
+        return cleaned_data
+
+
+    def clean_password2(self):
+        pass
 
 
 class UserLoginForm(AuthenticationForm):

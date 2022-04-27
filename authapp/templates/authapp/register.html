@@ -3,7 +3,7 @@
 {% block content %}
 <div class="col-lg-7">
     {% if form.errors or messages %}
-    <div class="alert {% if messages %} alert-success {% else %} alert-warning {% endif %} alert-dismissible fade show" role="alert"
+    <div class="alert {% if messages.level == 25 %} alert-success {% else %} alert-warning {% endif %} alert-dismissible fade show" role="alert"
          style="margin-top: 50px;">
         {% if messages %}
             {% for message in messages %}
@@ -29,7 +29,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="{{ form.username.id_for_label }}">Имя</label>
-                            {{ form.username }}
+                            {{ form.first_name }}
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -42,7 +42,7 @@
                 <div class="form-row">
                     <div class="col-md-6">
                         <label class="small mb-1" for="{{ form.first_name.id_for_label }}">Имя пользователя</label>
-                        {{ form.first_name }}
+                        {{ form.username }}
                     </div>
                     <div class="col-md-6">
                         <label class="small mb-1" for="{{ form.email.id_for_label }}">Адрес электронной

@@ -8,4 +8,5 @@ urlpatterns = [
     path('register/', GSRegisterView.as_view(), name='register'),
     path('logout/', GSLogout.as_view(), name='logout'),
     path('profile/', ProfileView.as_view(), name='profile'),
+    path('verify/<str:email>/<str:key>', GSRegisterView.verify, name='verify')
 ]

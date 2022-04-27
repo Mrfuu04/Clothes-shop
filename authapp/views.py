@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
@@ -12,6 +14,7 @@ from adminapp.mixin import AuthorisationDispatchMixin, AdminContextMixin
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from authapp.models import User
 from basketapp.models import Basket
+
 
 
 class ProfileView(UpdateView, AuthorisationDispatchMixin):
@@ -97,12 +100,38 @@ class GSRegisterView(FormView, AdminContextMixin):
     def post(self, request, *args, **kwargs):
         form = self.form_class(data=request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Вы успешно зарегистрировались!')
-            return HttpResponseRedirect(reverse('authapp:login'))
+            user = form.save()
+            if self.send_verify_mail(user):
+                messages.success(request, 'Письмо подтверждения отправлено!')
+                return HttpResponseRedirect(reverse('authapp:login'))
+            else:
+                messages.error(request, 'Ошибка при отправке письма')
         else:
             messages.error(request,  *(error for error in form.errors.values()))
             return HttpResponseRedirect(reverse('authapp:register'))
+
+
+    def send_verify_mail(self, user):
+        verify_link = reverse('authapp:verify', args=[user.email, user.activation_key])
+        subject = None
+        message = f'Для подтверждения учетной записи на портале {settings.DOMAIN_NAME}\nПерейдите по ссылке\n{settings.DOMAIN_NAME}{verify_link}'
+        return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+
+
+    def verify(self, email, key):
+        try:
+            user = User.objects.get(email=email)
+            if user and user.activation_key == key and not user.is_user_key_expires():
+                user.is_active = True
+                user.activation_key = ''
+                user.is_key_expires = None
+                user.save()
+                auth.login(self, user)
+                return render(self, 'authapp/verification.html')
+            else:
+                return render(self, 'authapp/verification.html')
+        except Exception as e:
+            return HttpResponseRedirect(reverse('mainapp:index'))
 
 
 
