@@ -3,16 +3,17 @@
 {% block content %}
 <div class="col-lg-5">
     {% if form.errors or messages %}
-    <div class="alert {% if messages %} alert-success {% else %} alert-warning {% endif %} alert-dismissible fade show" role="alert"
+    <div class="alert {% if messages %} alert-success {% else %} alert-warning {% endif %} alert-dismissible fade show"
+         role="alert"
          style="margin-top: 50px;">
         {% if messages %}
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
         {% else %}
-            {% for error in form.non_field_errors %}
-                {{ error }}
-            {% endfor %}
+        {% for error in form.non_field_errors %}
+        {{ error }}
+        {% endfor %}
         {% endif %}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -39,10 +40,16 @@
                     <input class="btn btn-primary" type="submit" value="Авторизоваться">
                 </div>
             </form>
+
         </div>
         <div class="card-footer text-center">
             <div class="small"><a href="{% url 'authapp:register' %}">Нужен аккаунт? Зарегистрируйся!</a></div>
         </div>
+        <button class="btn btn-round form-control">
+            <a href="{% url 'social:begin' 'vk-oauth2' %}?next=/">
+                Вход через ВКонтакте
+            </a>
+        </button>
     </div>
 </div>
 {% endblock %}

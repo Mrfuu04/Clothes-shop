@@ -17,6 +17,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+import social_django
 
 
 urlpatterns = [
@@ -31,6 +32,7 @@ urlpatterns = [
     path('', include('basketapp.urls', namespace='basket_remove')),
     path('basket/', include('basketapp.urls', namespace='basket_edit')),
     path('adminapp/', include('adminapp.urls', namespace='adminapp')),
+    path('', include('social_django.urls', namespace='social')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -4,23 +4,29 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, UpdateView
 
 from adminapp.mixin import AuthorisationDispatchMixin, AdminContextMixin
-from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm, UserProfileEditForm
 from authapp.models import User
 from basketapp.models import Basket
-
 
 
 class ProfileView(UpdateView, AuthorisationDispatchMixin):
     form_class = UserProfileForm
     template_name = 'authapp/profile.html'
     success_url = reverse_lazy('authapp:profile')
+
+    def post(self, request, *args, **kwargs):
+        form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
+        profile_form = UserProfileEditForm(data=request.POST, files=request.FILES, instance=request.user.userprofile)
+        if form.is_valid() and profile_form.is_valid():
+            form.save()
+        return super(ProfileView, self).post(self, request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         return User.objects.get(id=self.request.user.id)
@@ -33,13 +39,14 @@ class ProfileView(UpdateView, AuthorisationDispatchMixin):
 
     def form_invalid(self, form):
         messages.set_level(self.request, 40)
-        messages.error(self.request, *(error for error in form.errors.values()))
+        messages.error(
+            self.request, *(error for error in form.errors.values()))
         return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = f'Профиль {self.request.user.username}'
-        context['basket'] = Basket.objects.filter(user=self.request.user)
+        context['profile'] = UserProfileEditForm(instance=self.request.user.userprofile)
         return context
 
 
@@ -107,16 +114,16 @@ class GSRegisterView(FormView, AdminContextMixin):
             else:
                 messages.error(request, 'Ошибка при отправке письма')
         else:
-            messages.error(request,  *(error for error in form.errors.values()))
+            messages.error(
+                request,  *(error for error in form.errors.values()))
             return HttpResponseRedirect(reverse('authapp:register'))
 
-
     def send_verify_mail(self, user):
-        verify_link = reverse('authapp:verify', args=[user.email, user.activation_key])
+        verify_link = reverse('authapp:verify', args=[
+                              user.email, user.activation_key])
         subject = None
         message = f'Для подтверждения учетной записи на портале {settings.DOMAIN_NAME}\nПерейдите по ссылке\n{settings.DOMAIN_NAME}{verify_link}'
         return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
-
 
     def verify(self, email, key):
         try:
@@ -126,13 +133,13 @@ class GSRegisterView(FormView, AdminContextMixin):
                 user.activation_key = ''
                 user.is_key_expires = None
                 user.save()
-                auth.login(self, user)
+                auth.login(
+                    self, user, backend='django.contrib.auth.backends.ModelBackend')
                 return render(self, 'authapp/verification.html')
             else:
                 return render(self, 'authapp/verification.html')
         except Exception as e:
             return HttpResponseRedirect(reverse('mainapp:index'))
-
 
 
 # def register(request):

@@ -4,7 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 import hashlib
 
-from authapp.models import User
+from authapp.models import User, UserProfile
 
 
 class UserLoginForm(AuthenticationForm):
@@ -52,19 +52,6 @@ class UserRegisterForm(UserCreationForm):
         pass
 
 
-class UserLoginForm(AuthenticationForm):
-
-    class Meta:
-        model = User
-        fields = ('username', 'password')
-
-    def __init__(self, *args, **kwargs):
-        super(UserLoginForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs['placeholder'] = 'Введите имя'
-        self.fields['password'].widget.attrs['placeholder'] = 'Введите пароль'
-        for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
-
 
 class UserProfileForm(UserChangeForm):
     avatar = forms.ImageField(widget=forms.FileInput, required=False)
@@ -90,11 +77,16 @@ class UserProfileForm(UserChangeForm):
             raise ValidationError('Слишком длинная фамилия!')
         return data
 
-    def clean_avatar(self):
-        data = self.cleaned_data['avatar']
-        if data is None:
-            return data
-        if data.image.format not in ['JPEG', 'PNG']:
-            raise ValidationError('Неверный формат картинки')
-        return data
 
+
+class UserProfileEditForm(forms.ModelForm):
+
+    class Meta:
+        model = UserProfile
+        exclude = ('user',)
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileEditForm, self).__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control py-1'
