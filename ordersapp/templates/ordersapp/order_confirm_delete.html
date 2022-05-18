@@ -1,0 +1,20 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block css %}
+<link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/profile.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="category_delete">
+<div class="h1">Уверены, что хотите удалить?</div>
+{% include 'order_includes/order_summary.html' %}
+<form action="{% url 'ordersapp:order_delete' object.pk %}"
+method="post">
+{% csrf_token %}
+<input class="btn btn-danger" type="submit" value="удалить">
+</form>
+<button class="btn btn-success">
+<a href="{% url 'ordersapp:orders' %}">отмена</a>
+</button>
+</div>
+{% endblock %}

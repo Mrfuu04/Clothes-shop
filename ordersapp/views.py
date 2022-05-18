@@ -43,7 +43,7 @@ class OrderCreateView(CreateView):
                 for num, form in enumerate(formset.forms):
                     form.initial['product'] = basket_items[num].product
                     form.initial['quantity'] = basket_items[num].quantity
-                basket_items.delete()
+                # basket_items.delete()
             else:
                 formset = OrderFormSet()
         
@@ -84,12 +84,15 @@ class OrderDeleteView(DeleteView):
     model = Order
     success_url = reverse_lazy('ordersapp:orders')
 
-    def get(self, request, *args, **kwargs):
-        model_obj = self.get_object()
-        model_obj.is_active = False
-        model_obj.save()
+    # def get(self, request, *args, **kwargs):
+    #     model_obj = self.get_object()
+    #     model_obj.is_active = False
+    #     model_obj.status = model_obj.CANCEL
+    #     # for i in model_obj.orderitem.select_related():
+    #
+    #     model_obj.save()
 
-        return HttpResponseRedirect(self.success_url)
+        # return HttpResponseRedirect(self.success_url)
 
 
 
@@ -108,9 +111,9 @@ class OrderUpdateView(UpdateView):
             formset = OrderFormSet(self.request.POST, instance=self.object)
         else:
             formset = OrderFormSet(instance=self.object)
-            # for num, form in enumerate(formset.forms):
-            #     if form.instance.pk:
-            #         form.initial['price'] = form.instance.product.price
+            for num, form in enumerate(formset.forms):
+                if form.instance.pk:
+                    form.initial['price'] = form.instance.product.price
 
         data['orderitem'] = formset
         return data
