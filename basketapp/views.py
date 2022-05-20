@@ -14,8 +14,6 @@ from mainapp.models import Products
 from django.template.loader import render_to_string
 
 
-
-
 class BasketAdd(CreateView, AuthorisationDispatchMixin):
 
     def get(self, request, *args, **kwargs):
@@ -30,6 +28,7 @@ class BasketAdd(CreateView, AuthorisationDispatchMixin):
         else:
             Basket.objects.create(user=user, product=product, quantity=1)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
 
 # @login_required(login_url='/login')
 # def basket_add(request, id):
@@ -75,7 +74,6 @@ class BasketUpdate(UpdateView, AuthorisationDispatchMixin):
             result = render_to_string(
                 'basket_includes/basket_include_ajax.html', context=context)
             return JsonResponse({'result': result})
-
 
 # def basket_edit(request, basket_id, quantity):
 #     if request.is_ajax():
