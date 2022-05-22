@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.forms import inlineformset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -9,6 +9,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView
 
 from adminapp.mixin import AuthorisationDispatchMixin
+from mainapp.models import Products
 from ordersapp.forms import OrderItemForm
 from ordersapp.models import Order, OrderItem
 from basketapp.models import Basket
@@ -135,3 +136,11 @@ def order_forming_complete(request, pk):
     order.status = Order.SENT_TO_PROCEED
     order.save()
     return HttpResponseRedirect(reverse('ordersapp:orders'))
+
+
+def get_product_price(request, pk):
+    if request.is_ajax():
+        product = Products.objects.get(pk=pk)
+        if product:
+            return JsonResponse({'price': product.price})
+        return JsonResponse({'price': 0})

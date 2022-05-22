@@ -31,9 +31,9 @@ window.onload = function () {
 
     function getSummary(orderitem_price, delta_quantity) {
         delta_cost = orderitem_price * delta_quantity;
-        total_price += delta_cost;
+        total_price = Number((total_price + delta_cost).toFixed(2));
         total_quantity += delta_quantity
-        $('.order_total_cost').html(Number(total_price.toString()).toFixed(2));
+        $('.order_total_cost').html(Number(total_price.toString()));
         $('.order_total_quantity').html(total_quantity.toString());
     }
 
@@ -49,4 +49,60 @@ window.onload = function () {
         getSummary(price_arr[orderitem_num], delta_quantity);
 
     })
+
+    $('.formset_row').formset({
+        addText: 'добавить',
+        deleteText: 'удалить',
+        prefix: 'orderitem',
+        removed: deleteOrderItem
+    });
+
+    function deleteOrderItem(row) {
+        let target = row[0].querySelector('input[type="number"]').name;
+        orderitem_num = parseInt(target.replace('orderitem-', '').replace('-quantity', ''));
+        delta_quantity = -quantity_arr[orderitem_num];
+        quantity_arr[orderitem_num] = 0;
+        if (!isNaN(price_arr[orderitem_num]) && !isNaN(delta_quantity)) {
+            getSummary(price_arr[orderitem_num], delta_quantity);
+        };
+    }
+
+    $('.order_form select').change(function () {
+        var target = event.target;
+        orderitem_num = parseInt(target.name.replace('orderitem-', '').replace('-product', ''));
+        var orderitem_product_pk = target.options[target.selectedIndex].value;
+        if (orderitem_product_pk) {
+            $.ajax({
+                url: '/product/' + orderitem_product_pk + '/',
+                success: function (data) {
+                    if (data.price) {
+                        price_arr[orderitem_num] = parseFloat(data.price);
+                        if (isNaN(quantity_arr[orderitem_num])) {
+                            quantity_arr[orderitem_num] = 0;
+                        }
+                        var price_html = '<span class="orderitems-' + orderitem_num + '-price">' + data.price.toString().replace('.', ',') + '</span> руб';
+                        var current_tr = $('.order_form table').find('tr:eq(' + (orderitem_num + 1) + ')');
+                        current_tr.find('td:eq(2)').html(price_html);
+                        if (isNaN(current_tr.find('input[type="number"]').val())) {
+                            current_tr.find('input[type="number"]').val(0);
+                        }
+                        orderSummaryRecalc();
+                    }
+                },
+            });
+        }
+    });
+    if (!total_quantity) {
+        orderSummaryRecalc();
+    }
+    function orderSummaryRecalc() {
+        total_quantity = 0;
+        total_price = 0;
+        for (var i = 0; i < total_forms; i++) {
+            total_quantity += quantity_arr[i];
+            total_price += quantity_arr[i] * price_arr[i];
+        }
+        $('.order_total_quantity').html(total_quantity.toString());
+        $('.order_total_cost').html(Number(total_price.toFixed(2)).toString());
+    }
 }

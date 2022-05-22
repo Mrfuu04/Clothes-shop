@@ -1,4 +1,6 @@
 from django import forms
+
+from mainapp.models import Products
 from ordersapp.models import Order, OrderItem
 
 class OrderForm(forms.ModelForm):
@@ -21,5 +23,6 @@ class OrderItemForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(OrderItemForm, self).__init__(*args, **kwargs)
+        self.fields['product'].queryset = Products.get_items()
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
