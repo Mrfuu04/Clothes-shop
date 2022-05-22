@@ -32,8 +32,9 @@ class Order(models.Model):
     def delete(self, **kwargs):
         for item in self.orderitem.select_related():
             item.product.quantity += item.quantity
-            item.save()
+            item.product.save()
         self.is_active = False
+        # self.status = self.CANCEL
         self.save()
 
     def get_total_quantity(self):
@@ -57,7 +58,11 @@ class OrderItem(models.Model):
     def get_product_cost(self):
         return self.product.price * self.quantity
 
-
+    def delete(self, **kwargs):
+        self.product.quantity += self.quantity
+        self.product.save()
+        super(OrderItem, self).delete(**kwargs)
+        
 
 
 

@@ -1,19 +1,21 @@
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.forms import inlineformset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView
 
+from adminapp.mixin import AuthorisationDispatchMixin
+from mainapp.models import Products
 from ordersapp.forms import OrderItemForm
 from ordersapp.models import Order, OrderItem
 from basketapp.models import Basket
 
 
-class OrdersListView(ListView):
+class OrdersListView(ListView, AuthorisationDispatchMixin):
     template_name = 'ordersapp/orders_list.html'
     model = Order
     context_object_name = 'orders'
@@ -39,21 +41,22 @@ class OrderCreateView(CreateView):
             if len(basket_items):
                 OrderFormSet = inlineformset_factory(Order, OrderItem,
                                                      form=OrderItemForm, extra=len(basket_items))
-                formset = OrderFormSet
+                formset = OrderFormSet()
                 for num, form in enumerate(formset.forms):
                     form.initial['product'] = basket_items[num].product
                     form.initial['quantity'] = basket_items[num].quantity
+                    form.initial['price'] = basket_items[num].product.price
                 basket_items.delete()
             else:
                 formset = OrderFormSet()
-        
+
         data['orderitem'] = formset
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         ordersitems = context['orderitem']
-        
+
         with transaction.atomic():
             form.instance.user = self.request.user
             self.object = form.save()
@@ -63,7 +66,7 @@ class OrderCreateView(CreateView):
 
         if self.object.total_cost() == 0:
             self.object.delete()
-            
+
         return super(OrderCreateView, self).form_valid(form)
 
 
@@ -75,7 +78,7 @@ def make_order(request):
     order.save()
     for good in baskets:
         OrderItem.objects.create(order=order, product=good.product, quantity=good.quantity)
-    baskets.delete()
+    baskets.delete(key='make_order')
 
     return HttpResponseRedirect(reverse('ordersapp:orders'))
 
@@ -83,15 +86,6 @@ def make_order(request):
 class OrderDeleteView(DeleteView):
     model = Order
     success_url = reverse_lazy('ordersapp:orders')
-
-    def get(self, request, *args, **kwargs):
-        model_obj = self.get_object()
-        model_obj.is_active = False
-        model_obj.save()
-
-        return HttpResponseRedirect(self.success_url)
-
-
 
 
 class OrderUpdateView(UpdateView):
@@ -108,9 +102,9 @@ class OrderUpdateView(UpdateView):
             formset = OrderFormSet(self.request.POST, instance=self.object)
         else:
             formset = OrderFormSet(instance=self.object)
-            # for num, form in enumerate(formset.forms):
-            #     if form.instance.pk:
-            #         form.initial['price'] = form.instance.product.price
+            for num, form in enumerate(formset.forms):
+                if form.instance.pk:
+                    form.initial['price'] = form.instance.product.price
 
         data['orderitem'] = formset
         return data
@@ -128,8 +122,6 @@ class OrderUpdateView(UpdateView):
         return super(OrderUpdateView, self).form_valid(form)
 
 
-
-
 class OrderReadView(DetailView):
     model = Order
 
@@ -144,3 +136,11 @@ def order_forming_complete(request, pk):
     order.status = Order.SENT_TO_PROCEED
     order.save()
     return HttpResponseRedirect(reverse('ordersapp:orders'))
+
+
+def get_product_price(request, pk):
+    if request.is_ajax():
+        product = Products.objects.get(pk=pk)
+        if product:
+            return JsonResponse({'price': product.price})
+        return JsonResponse({'price': 0})
