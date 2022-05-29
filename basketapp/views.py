@@ -19,8 +19,8 @@ class BasketAdd(CreateView, AuthorisationDispatchMixin):
     def get(self, request, *args, **kwargs):
         id_product = self.kwargs.get('product_id')
         user = self.request.user
-        product = Products.objects.get(id=id_product)
-        baskets = Basket.objects.filter(user=user, product=product)
+        product = Products.objects.get(id=id_product).select_related()
+        baskets = Basket.objects.filter(user=user, product=product).select_related('user', 'product')
         if baskets:
             basket = baskets.first()
             basket.quantity += 1
@@ -60,7 +60,7 @@ class BasketUpdate(UpdateView, AuthorisationDispatchMixin):
 
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
-            basket = Basket.objects.get(id=self.kwargs.get('basket_id'))
+            basket = Basket.objects.get(id=self.kwargs.get('basket_id')).select_related()
             quantity = self.kwargs.get('quantity')
             if quantity > 0:
                 basket.quantity = quantity
@@ -68,7 +68,7 @@ class BasketUpdate(UpdateView, AuthorisationDispatchMixin):
             else:
                 basket.delete()
 
-            baskets = Basket.objects.filter(user=request.user)
+            baskets = Basket.objects.filter(user=request.user).select_related('user')
             context = {'basket': baskets}
 
             result = render_to_string(
