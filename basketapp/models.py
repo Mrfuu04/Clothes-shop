@@ -31,11 +31,11 @@ class Basket(models.Model):
         return self.quantity * self.product.price
 
     def get_result_sum(self):
-        basket = Basket.objects.filter(user=self.user)
+        basket = Basket.objects.filter(user=self.user).select_related()
         return sum(good.get_sum() for good in basket)
 
     def get_quantity(self):
-        basket = Basket.objects.filter(user=self.user)
+        basket = Basket.objects.filter(user=self.user).select_related()
         return sum(good.quantity for good in basket)
 
     def delete(self, **kwargs):
