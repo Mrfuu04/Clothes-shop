@@ -1,0 +1,7 @@
+http://194.58.121.40/login/ POST username=root&password=123
+http://194.58.121.40/order_update/1
+http://194.58.121.40/products/
+http://194.58.121.40/category_id/5/
+http://194.58.121.40/profile/
+http://194.58.121.40/orders/
+
