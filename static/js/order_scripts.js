@@ -1,4 +1,16 @@
 window.onload = function () {
+    $('.basket_list').on('click', 'input[type="number"]', function () {
+        let t_href = event.target;
+
+        $.ajax({
+            url: "/basket/edit/" + t_href.name + "/" + t_href.value + "/",
+            success: function (data) {
+                $('.basket_list').html(data.result);
+            },
+        });
+        event.preventDefault();
+    });
+
     let total_price = parseFloat($('.order_total_cost').text().replace(',', '.'));
     let total_forms = $('input[name=orderitem-TOTAL_FORMS]').val() || 0;
     let total_quantity = parseInt($('.order_total_quantity').text()) || 0;
