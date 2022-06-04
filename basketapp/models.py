@@ -1,12 +1,14 @@
 from django.db import models
 
 # Create your models here.
+from django.utils.functional import cached_property
+
 from authapp.models import User
 from mainapp.models import Products
 
 
 class BasketQuerySet(models.QuerySet):
-        
+
     def delete(self, *args, **kwargs):
         if kwargs.get('key') != 'make_order':
             for object in self:
@@ -14,10 +16,11 @@ class BasketQuerySet(models.QuerySet):
                 object.product.save()
         super(BasketQuerySet, self).delete()
 
+
 class Basket(models.Model):
     objects = BasketQuerySet.as_manager()
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='basket')
     product = models.ForeignKey(Products, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
@@ -26,16 +29,19 @@ class Basket(models.Model):
     def __str__(self):
         return f'Корзина {self.user.username}'
 
-
     def get_sum(self):
         return self.quantity * self.product.price
 
+    @cached_property
+    def get_basket(self):
+        return self.user.basket.select_related()
+
     def get_result_sum(self):
-        basket = Basket.objects.filter(user=self.user).select_related()
+        basket = self.get_basket
         return sum(good.get_sum() for good in basket)
 
     def get_quantity(self):
-        basket = Basket.objects.filter(user=self.user).select_related()
+        basket = self.get_basket
         return sum(good.quantity for good in basket)
 
     def delete(self, **kwargs):

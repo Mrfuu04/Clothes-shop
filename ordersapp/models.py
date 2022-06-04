@@ -3,6 +3,8 @@ from django.db import models
 
 
 # Create your models here.
+from django.utils.functional import cached_property
+
 from mainapp.models import Products
 
 
@@ -37,12 +39,17 @@ class Order(models.Model):
         # self.status = self.CANCEL
         self.save()
 
-    def get_total_quantity(self):
+    @cached_property
+    def get_items(self):
         items = self.orderitem.select_related()
+        return items
+
+    def get_total_quantity(self):
+        items = self.get_items
         return sum(list(map(lambda x: x.quantity, items)))
 
     def total_cost(self):
-        items = self.orderitem.select_related()
+        items = self.get_items
         return sum(list(map(lambda x: x.product.price * x.quantity, items)))
 
     def __str__(self):
