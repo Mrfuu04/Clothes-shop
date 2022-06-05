@@ -5,7 +5,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 from datetime import datetime
 
-from mainapp.cache_functions import get_links_menu, get_product_detail
+from mainapp.cache_functions import get_links_menu, get_product_detail, get_links_menu_category
 from mainapp.models import Products, ProductCategory
 from django.views.generic import DetailView, ListView, DeleteView, UpdateView, CreateView, TemplateView
 
@@ -42,11 +42,10 @@ class ProductsView(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        qs = super().get_queryset()
         if self.kwargs.get('category'):
-            return get_links_menu(self.kwargs.get('category'))
+            return get_links_menu_category(self.kwargs.get('category'))
             # return qs.filter(category=self.kwargs.get('category')).select_related('category')
-        return qs
+        return get_links_menu()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
