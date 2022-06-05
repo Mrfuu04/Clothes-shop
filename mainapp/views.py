@@ -5,15 +5,14 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 from datetime import datetime
 
+from mainapp.cache_functions import get_links_menu, get_product_detail
 from mainapp.models import Products, ProductCategory
 from django.views.generic import DetailView, ListView, DeleteView, UpdateView, CreateView, TemplateView
-
-
-
 
 now = datetime.today().strftime('%H:%M')
 # Create your views here.
 MODULE_DIR = os.path.dirname(__file__)
+
 
 def read_json(file):
     file_path = os.path.join(MODULE_DIR, file)
@@ -22,7 +21,7 @@ def read_json(file):
 
 class IndexView(TemplateView):
     template_name = 'mainapp/index.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['title'] = 'GeekShop'
@@ -45,7 +44,8 @@ class ProductsView(ListView):
     def get_queryset(self):
         qs = super().get_queryset()
         if self.kwargs.get('category'):
-            return qs.filter(category=self.kwargs.get('category')).select_related('category')
+            return get_links_menu(self.kwargs.get('category'))
+            # return qs.filter(category=self.kwargs.get('category')).select_related('category')
         return qs
 
     def get_context_data(self, **kwargs):
@@ -54,7 +54,6 @@ class ProductsView(ListView):
         context['title'] = 'GeekShop - Каталог'
 
         return context
-
 
 
 # def products(request, category_id=None, page=1):
@@ -86,3 +85,9 @@ class ProductsView(ListView):
 class ProductDetail(DetailView):
     model = Products
     template_name = 'mainapp/product_detail.html'
+
+    def get_queryset(self, **kwargs):
+        qs = super(ProductDetail, self).get_queryset()
+        if self.kwargs.get('pk'):
+            return get_product_detail(self.kwargs.get('pk'))
+        return qs
