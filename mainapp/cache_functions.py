@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.cache import cache
 
-from mainapp.models import Products
+from mainapp.models import Products, ProductCategory
 
 
 def get_links_menu_category(category_id):
@@ -24,6 +24,17 @@ def get_links_menu():
             cache.set(key, all_products)
         return all_products
     return Products.objects.all()
+
+
+def get_categories():
+    if settings.LOW_CACHE:
+        key = 'all_cats'
+        all_cats = cache.get(key)
+        if all_cats is None:
+            all_cats = ProductCategory.objects.all()
+            cache.set(key, all_cats)
+        return all_cats
+    return ProductCategory.objects.all()
 
 
 def get_product_detail(pk):
