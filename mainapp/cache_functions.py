@@ -9,7 +9,7 @@ def get_links_menu(category_id):
         key = 'category_products'
         category_product = cache.get(key)
         if category_product is None:
-            key = Products.objects.filter(category=category_id).select_related('category')
+            category_product = Products.objects.filter(category=category_id).select_related('category')
             cache.set(key, category_product)
         return category_product
     else:
@@ -21,7 +21,7 @@ def get_product_detail(pk):
         key = 'product'
         product = cache.get(key)
         if product is None:
-            key = Products.objects.filter(pk=pk).select_related('category')
+            product = Products.objects.filter(pk=pk).select_related('category')
             cache.set(key, product)
         return product
     else:
