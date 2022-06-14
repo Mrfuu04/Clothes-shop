@@ -65,18 +65,13 @@ class UserProfileForm(UserChangeForm):
         super(UserProfileForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['readonly'] = True
         self.fields['email'].widget.attrs['readonly'] = True
-        self.fields['age'].widget.attrs['color'] = 'red'
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-1'
         self.fields['avatar'].widget.attrs['class'] = 'custom_file-input'
 
-
-    def clean_last_name(self):
-        data = self.cleaned_data['last_name']
-        if len(data) > 15:
-            raise ValidationError('Слишком длинная фамилия!')
+    def clean_avatar(self):
+        data = self.cleaned_data['avatar']
         return data
-
 
 
 class UserProfileEditForm(forms.ModelForm):
