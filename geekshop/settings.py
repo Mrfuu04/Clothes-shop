@@ -118,7 +118,7 @@ WSGI_APPLICATION = 'geekshop.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
-SERVER = True
+SERVER = False
 
 if SERVER:
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -191,15 +191,16 @@ LOGIN_REDIRECT_URL = 'mainapp:index'
 
 # Mail authentication settings
 
-DOMAIN_NAME = 'http://localhost:8000'
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 25
-# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-EMaIL_USE_SSL = False
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = True
 
-# Для отправки в терминал
-EMAIL_HOST_USER, EMAIL_HOST_PASSWORD = None, None
+if SERVER:
+    DOMAIN_NAME = 'http://http://194.58.121.40/:80'
+else:
+    DOMAIN_NAME = 'http://localhost:8000'
 
 # Авторизация через ВК
 
@@ -240,4 +241,4 @@ if os.name == 'posix':
         }
     }
 
-LOW_CACHE = True
+LOW_CACHE = False
