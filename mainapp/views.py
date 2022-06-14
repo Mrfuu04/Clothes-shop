@@ -84,9 +84,3 @@ class ProductsView(ListView):
 class ProductDetail(DetailView):
     model = Products
     template_name = 'mainapp/product_detail.html'
-
-    def get_queryset(self, **kwargs):
-        qs = super(ProductDetail, self).get_queryset()
-        if self.kwargs.get('pk'):
-            return get_product_detail(self.kwargs.get('pk'))
-        return qs

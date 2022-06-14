@@ -35,15 +35,3 @@ def get_categories():
             cache.set(key, all_cats)
         return all_cats
     return ProductCategory.objects.all()
-
-
-def get_product_detail(pk):
-    if settings.LOW_CACHE:
-        key = 'product'
-        product = cache.get(key)
-        if product is None:
-            product = Products.objects.filter(pk=pk).select_related('category')
-            cache.set(key, product)
-        return product
-    else:
-        return Products.objects.filter(pk=pk)
