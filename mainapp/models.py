@@ -5,12 +5,12 @@ from django.db import models
 
 class ProductCategory(models.Model):
     class Meta:
-        verbose_name = 'Категория'
+        verbose_name = 'категорию'
         verbose_name_plural = 'Категории'
 
-    name = models.CharField(max_length=64, unique=True)
-    description = models.TextField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
+    name = models.CharField(max_length=64, unique=True, verbose_name='Название')
+    description = models.TextField(blank=True, null=True, verbose_name='Описание')
+    is_active = models.BooleanField(default=True, verbose_name='Активность')
     slug = models.SlugField(max_length=256, unique=True, db_index=True, verbose_name='URL')
 
     def __str__(self):
@@ -22,13 +22,13 @@ class Products(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
-    name = models.CharField(max_length=128)
-    image = models.ImageField(upload_to='products_images', blank=True)
-    description = models.TextField(blank=True, null=True)
-    price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
-    quantity = models.PositiveIntegerField(default=0)
-    category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
-    is_active = models.BooleanField(default=True)
+    name = models.CharField(max_length=128, verbose_name='Название')
+    image = models.ImageField(upload_to='products_images', blank=True, verbose_name='Изображение')
+    description = models.TextField(blank=True, null=True, verbose_name='Описание')
+    price = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name='Цена')
+    quantity = models.PositiveIntegerField(default=0, verbose_name='Кол-во')
+    category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, verbose_name='Категория')
+    is_active = models.BooleanField(default=True, verbose_name='Активность')
     slug = models.SlugField(max_length=256, unique=True, db_index=True, verbose_name='URL')
 
     def __str__(self):
