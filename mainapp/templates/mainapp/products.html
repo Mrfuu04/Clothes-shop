@@ -22,7 +22,7 @@
                 <a href="{% url 'mainapp:products' %}" class="list-group-item">Все товары</a>
                 {% get_all_categories as all_categories %}
                 {% for category in all_categories %}
-                    <a href="{% url 'mainapp:category_id' category.id %}" class="list-group-item">{{category.name}}</a>
+                    <a href="{% url 'mainapp:category_id' category.slug %}" class="list-group-item">{{category.name}}</a>
                 {% endfor %}
             </div>
 
@@ -63,14 +63,14 @@
                 {% for good in products %}
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="card h-100">
-                            <a href="{% url 'mainapp:product_detail' good.id %}">
+                            <a href="{% url 'mainapp:product_detail' good.slug %}">
                                 <img class="card-img-top"
                                      src="/media/{{good.image}}"
                                      alt="">
                             </a>
                             <div class="card-body">
                                 <h4 class="card-title">
-                                    <a href="{% url 'mainapp:product_detail' good.id %}">{{good.name}}</a>
+                                    <a href="{% url 'mainapp:product_detail' good.slug %}">{{good.name}}</a>
                                 </h4>
                                 <h5>{{good.price}} руб.</h5>
                                 <p class="card-text">{{good.definition}}</p>

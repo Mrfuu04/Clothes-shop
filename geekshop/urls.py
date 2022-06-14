@@ -24,11 +24,7 @@ import social_django
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('mainapp.urls', namespace='index')),
-    path('', include('mainapp.urls', namespace='products')),
-    path('', include('authapp.urls', namespace='login')),
-    path('', include('authapp.urls', namespace='register')),
-    path('', include('authapp.urls', namespace='logout')),
-    path('', include('authapp.urls', namespace='profile')),
+    path('', include('authapp.urls', namespace='auth')),
     path('', include('basketapp.urls', namespace='basket_add')),
     path('', include('basketapp.urls', namespace='basket_remove')),
     path('basket/', include('basketapp.urls', namespace='basket_edit')),

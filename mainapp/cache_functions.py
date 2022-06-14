@@ -4,16 +4,16 @@ from django.core.cache import cache
 from mainapp.models import Products, ProductCategory
 
 
-def get_links_menu_category(category_id):
+def get_links_menu_category(cat_slug):
     if settings.LOW_CACHE:
         key = 'category_products'
         category_product = cache.get(key)
         if category_product is None:
-            category_product = Products.objects.filter(category=category_id).select_related('category')
+            category_product = Products.objects.filter(category__slug=cat_slug).select_related('category')
             cache.set(key, category_product)
         return category_product
     else:
-        return Products.objects.filter(category=category_id).select_related('category')
+        return Products.objects.filter(category__slug=cat_slug).select_related('category')
 
 def get_links_menu():
     if settings.LOW_CACHE:
