@@ -36,7 +36,7 @@ class IndexView(TemplateView):
 #     return render(request, 'mainapp/index.html', content)
 
 class ProductsView(ListView):
-    paginate_by = 3
+    paginate_by = 2
     model = Products
     template_name = 'mainapp/products.html'
     context_object_name = 'products'
