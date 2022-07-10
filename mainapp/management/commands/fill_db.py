@@ -35,4 +35,8 @@ class Command(BaseCommand):
             prod['category'] = _cat_id
             Products(**prod).save()
 
+        try:
+            User.objects.get(username='root').delete()
+        except:
+            pass
         User.objects.create_superuser('root', email=None, password='123')

@@ -27,6 +27,10 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Deploy settings
+SERVER = False
+DOCKER = True
+
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -118,8 +122,6 @@ WSGI_APPLICATION = 'geekshop.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
-SERVER = False
-
 if SERVER:
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
     DATABASES = {
@@ -132,12 +134,24 @@ if SERVER:
 
 else:
     STATICFILES_DIRS = (BASE_DIR / 'static',)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+    if DOCKER:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': os.environ.get('POSTGRES_NAME'),
+                'USER': os.environ.get('POSTGRES_USER'),
+                'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+                'HOST': 'db',
+                'PORT': 5432,
+            }
         }
-    }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -198,7 +212,7 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_SSL = True
 
 if SERVER:
-    DOMAIN_NAME = 'http://http://194.58.121.40/:80'
+    DOMAIN_NAME = 'host address'
 else:
     DOMAIN_NAME = 'http://localhost:8000'
 
