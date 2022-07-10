@@ -1,1 +1,18 @@
-# Geekshop
+# GeekShop
+
+## _Проект интернет магазина_
+
+## Запуск
+```sh
+git clone git@github.com:Mrfuu04/Geekshop.git
+```
+
+### Для запуска в Docker
+```sh
+в settings.py:
+SERVER = False
+DOCKER = True
+
+docker-compose up -d
+```
+Запускается локальный сервер на localhost:8080
