@@ -8,6 +8,7 @@ from authapp.models import User, UserProfile
 
 
 class UserLoginForm(AuthenticationForm):
+    """Форма для авторизации"""
 
     class Meta:
         model = User
@@ -22,6 +23,7 @@ class UserLoginForm(AuthenticationForm):
 
 
 class UserRegisterForm(UserCreationForm):
+    """Форма для регистрации"""
 
     class Meta:
         model = User
@@ -54,6 +56,7 @@ class UserRegisterForm(UserCreationForm):
 
 
 class UserProfileForm(UserChangeForm):
+    """Форма для профиля"""
     avatar = forms.ImageField(widget=forms.FileInput, required=False)
     age = forms.IntegerField(required=False)
 

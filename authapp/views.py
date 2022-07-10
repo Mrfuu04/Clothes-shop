@@ -17,6 +17,7 @@ from basketapp.models import Basket
 
 
 class ProfileView(UpdateView, AuthorisationDispatchMixin):
+    """Отображение профиля"""
     form_class = UserProfileForm
     template_name = 'authapp/profile.html'
     success_url = reverse_lazy('authapp:profile')
@@ -50,6 +51,7 @@ class ProfileView(UpdateView, AuthorisationDispatchMixin):
         return context
 
 
+# FBV вариант ProfileView
 # @login_required(login_url='/login')
 # def profile(request):
 #     if request.method == 'POST':
@@ -70,10 +72,12 @@ class ProfileView(UpdateView, AuthorisationDispatchMixin):
 #     return render(request, 'authapp/profile.html', context=context)
 
 class GSloginView(LoginView):
+    """Логин"""
     template_name = 'authapp/login.html'
     form_class = UserLoginForm
 
 
+# FBV вариант GSloginView
 # def login(request):
 #     if request.method == 'POST':
 #         form = UserLoginForm(data=request.POST)
@@ -99,6 +103,7 @@ class GSloginView(LoginView):
 #     return render(request, 'authapp/login.html', context=context)
 
 class GSRegisterView(FormView, AdminContextMixin):
+    """Регистрация нового пользователя"""
     template_name = 'authapp/register.html'
     form_class = UserRegisterForm
     success_url = reverse_lazy('authapp:login')
@@ -115,17 +120,19 @@ class GSRegisterView(FormView, AdminContextMixin):
                 messages.error(request, 'Ошибка при отправке письма')
         else:
             messages.error(
-                request,  *(error for error in form.errors.values()))
+                request, *(error for error in form.errors.values()))
             return HttpResponseRedirect(reverse('authapp:register'))
 
     def send_verify_mail(self, user):
+        """Отправляет письмо с подтверждение на почту"""
         verify_link = reverse('authapp:verify', args=[
-                              user.email, user.activation_key])
+            user.email, user.activation_key])
         subject = None
         message = f'Для подтверждения учетной записи на портале {settings.DOMAIN_NAME}\nПерейдите по ссылке\n{settings.DOMAIN_NAME}{verify_link}'
         return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
 
     def verify(self, email, key):
+        """Верификация при переходе по ссылке из письма подтверждения"""
         try:
             user = User.objects.get(email=email)
             if user and user.activation_key == key and not user.is_user_key_expires():
@@ -142,6 +149,7 @@ class GSRegisterView(FormView, AdminContextMixin):
             return HttpResponseRedirect(reverse('mainapp:index'))
 
 
+# FBV вариант GSRegisterView (Подтверждения по почте нет!)
 # def register(request):
 #     if request.method == 'POST':
 #         form = UserRegisterForm(data=request.POST)
@@ -162,9 +170,10 @@ class GSRegisterView(FormView, AdminContextMixin):
 #     return render(request, 'authapp/register.html', context=context)
 
 class GSLogout(LogoutView):
+    """Логаут"""
     next_page = 'mainapp:index'
 
-
+# FBV вариант GSLogout
 # def logout(request):
 #     auth.logout(request)
 #     return HttpResponseRedirect(reverse('mainapp:index'))

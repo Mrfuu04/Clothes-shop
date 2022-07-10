@@ -181,15 +181,15 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# MEDIAS
+# Медиа
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# User
+# Пользователь
 AUTH_USER_MODEL = 'authapp.User'
 LOGIN_REDIRECT_URL = 'mainapp:index'
 
-# Mail authentication settings
+# Настройки для отправки письма на почту для подтверждения регистрации
 
 EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 465
@@ -228,7 +228,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.user_details',
 )
 
-# MEMCACHED SETTINGS
+# Настройки кеша
 
 if os.name == 'posix':
     CACHE_MIDDLEWARE_ALIAS = 'default'
@@ -241,4 +241,6 @@ if os.name == 'posix':
         }
     }
 
+# При LOW_CACHE = True включает кеширование
+# При LOW_CACHE = False отключает кеширование
 LOW_CACHE = False

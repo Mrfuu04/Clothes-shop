@@ -11,6 +11,10 @@ def read_json(file_path):
 
 
 class Command(BaseCommand):
+    """
+    Заполняет БД данными из ../fixtures/productcategory.json и ../fixtures/products.json,
+    Создает суперпользователя name=root password=123
+    """
 
     def handle(self, *args, **options):
         ProductCategory.objects.all().delete()

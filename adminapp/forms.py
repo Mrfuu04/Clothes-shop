@@ -7,6 +7,7 @@ from mainapp.models import ProductCategory, Products
 
 
 class UserAdminRegisterForm(UserCreationForm):
+    """Форма создания пользователя через кастомную админку"""
     avatar = forms.ImageField(widget=forms.FileInput, required=False)
 
     class Meta:
@@ -27,6 +28,7 @@ class UserAdminRegisterForm(UserCreationForm):
 
 
 class AdminUserChange(UserChangeForm):
+    """Форма изменения пользователя через кастомную админку"""
     avatar = forms.ImageField(widget=forms.FileInput, required=False)
     age = forms.IntegerField(required=False)
 
@@ -45,6 +47,7 @@ class AdminUserChange(UserChangeForm):
 
 
 class AdminCategoryChange(ModelForm):
+    """Форма создания и изменения категории через кастомную админку"""
 
     class Meta:
         model = ProductCategory
@@ -59,6 +62,7 @@ class AdminCategoryChange(ModelForm):
 
 
 class AdminProductCreate(ModelForm):
+    """Форма создания и изменения товара через кастомную админку"""
 
     class Meta:
         model = Products

@@ -4,6 +4,7 @@ from authapp.models import UserProfile
 
 
 class Command(BaseCommand):
+    """Использовал для update профиля когда создал модель UserProfile"""
 
     def handle(self, *args, **options):
         users = User.objects.all()

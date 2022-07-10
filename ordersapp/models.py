@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.db import models
 
-
 # Create your models here.
 from django.utils.functional import cached_property
 
@@ -9,6 +8,8 @@ from mainapp.models import Products
 
 
 class Order(models.Model):
+    """Заказ"""
+
     FORMING = 'FM'
     SENT_TO_PROCEED = 'STP'
     PROCEEDED = 'PRD'
@@ -64,6 +65,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    """Отдельный товар в заказе"""
 
     order = models.ForeignKey(Order, related_name='orderitem', on_delete=models.CASCADE, verbose_name='Заказ')
     product = models.ForeignKey(Products, on_delete=models.CASCADE, verbose_name='Товар')
@@ -76,7 +78,3 @@ class OrderItem(models.Model):
         self.product.quantity += self.quantity
         self.product.save()
         super(OrderItem, self).delete(**kwargs)
-        
-
-
-

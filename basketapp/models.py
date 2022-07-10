@@ -8,6 +8,7 @@ from mainapp.models import Products
 
 
 class BasketQuerySet(models.QuerySet):
+    """Менеджер корзины. При удалении корзины возвращает количество товаров на склад"""
 
     def delete(self, *args, **kwargs):
         if kwargs.get('key') != 'make_order':
@@ -18,6 +19,7 @@ class BasketQuerySet(models.QuerySet):
 
 
 class Basket(models.Model):
+    """Корзина"""
     objects = BasketQuerySet.as_manager()
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='basket', verbose_name='Пользователь')

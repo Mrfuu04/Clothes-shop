@@ -10,6 +10,7 @@ from django.utils.timezone import now
 
 
 class User(AbstractUser):
+    """Модель пользователя. Используется как AUTH_USER_MODEL"""
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
@@ -22,12 +23,14 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=128, blank=True, null=True, unique=False, verbose_name='Фамилия')
 
     def is_user_key_expires(self):
+        """Проверяет истек ли ключ для регистрации"""
         if self.is_key_expires <= now() + timedelta(hours=48):
             return False
         return True
 
 
 class UserProfile(models.Model):
+    """Доп таблица пользователя. Заполняется автоматически при авторизации через ВК"""
     MALE = 'M'
     FEMALE = 'F'
     GENDER_COICES = ((MALE, 'М'), (FEMALE, 'Ж'))

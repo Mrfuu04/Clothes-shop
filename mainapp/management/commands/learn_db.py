@@ -1,10 +1,8 @@
-from datetime import datetime, timedelta
 from django.core.management.base import BaseCommand
 from django.db.models import Q, F, Case, When, CharField, Value
 
 from authapp.models import User
 from mainapp.models import Products
-from pprint import pprint
 
 
 class Command(BaseCommand):

@@ -5,12 +5,12 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 from datetime import datetime
 
+from adminapp.mixin import AdminContextMixin
 from mainapp.cache_functions import get_links_menu, get_links_menu_category
 from mainapp.models import Products, ProductCategory
-from django.views.generic import DetailView, ListView, DeleteView, UpdateView, CreateView, TemplateView
+from django.views.generic import DetailView, ListView, TemplateView
 
 now = datetime.today().strftime('%H:%M')
-# Create your views here.
 MODULE_DIR = os.path.dirname(__file__)
 
 
@@ -19,16 +19,14 @@ def read_json(file):
     return json.load(open(file_path, encoding='utf-8'))
 
 
-class IndexView(TemplateView):
+class IndexView(TemplateView, AdminContextMixin):
+    """Главная страница"""
     template_name = 'mainapp/index.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        context['title'] = 'GeekShop'
-        context['time'] = now
-        return context
+    title = 'GeekShop'
+    time = now
 
 
+# FBV вариант IndexView
 # def index(request):
 #     content = {'title': 'GeekShop',
 #                'time': now}
@@ -36,10 +34,13 @@ class IndexView(TemplateView):
 #     return render(request, 'mainapp/index.html', content)
 
 class ProductsView(ListView):
-    paginate_by = 2
+    """Список товаров"""
+    paginate_by = 5
     model = Products
     template_name = 'mainapp/products.html'
     context_object_name = 'products'
+    title = 'GeekShop - Каталог'
+    time = now
 
     def get_queryset(self):
         if self.kwargs.get('cat_slug'):
@@ -47,14 +48,8 @@ class ProductsView(ListView):
             # return qs.filter(category=self.kwargs.get('category')).select_related('category')
         return get_links_menu()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['time'] = now
-        context['title'] = 'GeekShop - Каталог'
 
-        return context
-
-
+# FBV вариант ProductsView
 # def products(request, category_id=None, page=1):
 #
 #     if category_id:
@@ -82,6 +77,6 @@ class ProductsView(ListView):
 
 
 class ProductDetail(DetailView):
+    """Детализация отдельного товара"""
     model = Products
     template_name = 'mainapp/product_detail.html'
-

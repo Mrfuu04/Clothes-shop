@@ -4,6 +4,7 @@ from mainapp.models import Products
 from ordersapp.models import Order, OrderItem
 
 class OrderForm(forms.ModelForm):
+    """Форма заказа"""
     class Meta:
         model = Order
         exclude = ('user',)
@@ -15,6 +16,7 @@ class OrderForm(forms.ModelForm):
 
 
 class OrderItemForm(forms.ModelForm):
+    """Форма отдельного товара в заказе"""
     price = forms.CharField(label='Цена', required=False)
 
     class Meta:

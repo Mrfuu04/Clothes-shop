@@ -16,6 +16,7 @@ from basketapp.models import Basket
 
 
 class OrdersListView(ListView, AuthorisationDispatchMixin):
+    """Список заказов"""
     template_name = 'ordersapp/orders_list.html'
     model = Order
     context_object_name = 'orders'
@@ -25,6 +26,7 @@ class OrdersListView(ListView, AuthorisationDispatchMixin):
 
 
 class OrderCreateView(CreateView):
+    """Создание заказа"""
     model = Order
     success_url = reverse_lazy('ordersapp:order_create')
     template_name = 'ordersapp/order_create.html'
@@ -84,11 +86,13 @@ def make_order(request):
 
 
 class OrderDeleteView(DeleteView):
+    """Удаление заказа"""
     model = Order
     success_url = reverse_lazy('ordersapp:orders')
 
 
 class OrderUpdateView(UpdateView):
+    """Изменение заказа"""
     model = Order
     template_name = 'ordersapp/order_create.html'
     success_url = reverse_lazy('ordersapp:orders')
@@ -123,6 +127,7 @@ class OrderUpdateView(UpdateView):
 
 
 class OrderReadView(DetailView):
+    """Детализация отдельного заказа"""
     model = Order
 
     def get_context_data(self, **kwargs):
@@ -132,6 +137,7 @@ class OrderReadView(DetailView):
 
 
 def order_forming_complete(request, pk):
+    """Изменение статуса заказа на 'Отправлен в обработку' при нажатии на 'Совершить покупку' в заказе"""
     order = Order.objects.get(pk=pk)
     order.status = Order.SENT_TO_PROCEED
     order.save()

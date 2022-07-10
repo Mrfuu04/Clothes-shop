@@ -14,3 +14,6 @@ class ProductsAdmin(admin.ModelAdmin):
 
 admin.site.register(ProductCategory, ProductCategoryAdmin)
 admin.site.register(Products, ProductsAdmin)
+
+admin.site.site_title = 'GeekShop | Admin'
+admin.site.site_header = 'GeekShop | Админка'

@@ -5,6 +5,7 @@ from mainapp.models import Products, ProductCategory
 
 
 def get_links_menu_category(cat_slug):
+    """Возвращает ссылки на товары по слагу"""
     if settings.LOW_CACHE:
         key = 'category_products'
         category_product = cache.get(key)
@@ -16,6 +17,7 @@ def get_links_menu_category(cat_slug):
         return Products.objects.filter(category__slug=cat_slug).select_related('category')
 
 def get_links_menu():
+    """Возвращает все ссылки на товары"""
     if settings.LOW_CACHE:
         key = 'all_products'
         all_products = cache.get(key)
@@ -27,6 +29,7 @@ def get_links_menu():
 
 
 def get_categories():
+    """Возвращает все категории"""
     if settings.LOW_CACHE:
         key = 'all_cats'
         all_cats = cache.get(key)

@@ -16,6 +16,7 @@ from django.template.loader import render_to_string
 
 
 class BasketAdd(CreateView, AuthorisationDispatchMixin):
+    """Добавление товара в корзину"""
 
     def get(self, request, *args, **kwargs):
         id_product = self.kwargs.get('product_id')
@@ -32,6 +33,7 @@ class BasketAdd(CreateView, AuthorisationDispatchMixin):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
+# FBV вариант BasketAdd
 # @login_required(login_url='/login')
 # def basket_add(request, id):
 #     product = Products.objects.get(id=id)
@@ -47,18 +49,21 @@ class BasketAdd(CreateView, AuthorisationDispatchMixin):
 #     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 class BasketRemove(DeleteView, AuthorisationDispatchMixin):
+    """Удаление корзины"""
 
     def get(self, request, *args, **kwargs):
         Basket.objects.get(id=self.kwargs.get('basket_id')).delete()
         return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
 
 
+# FBV вариант BasketRemove
 # @login_required(login_url='/login')
 # def basket_remove(request, basket_id):
 #     Basket.objects.get(id=basket_id).delete()
 #     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 class BasketUpdate(UpdateView, AuthorisationDispatchMixin):
+    """Изменение корзины"""
 
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
@@ -77,6 +82,7 @@ class BasketUpdate(UpdateView, AuthorisationDispatchMixin):
                 'basket_includes/basket_include_ajax.html', context=context)
             return JsonResponse({'result': result})
 
+# FBV вариант BasketUpdate
 # def basket_edit(request, basket_id, quantity):
 #     if request.is_ajax():
 #         basket = Basket.objects.get(id=basket_id)

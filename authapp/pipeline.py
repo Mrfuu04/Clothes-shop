@@ -9,7 +9,9 @@ from authapp.models import UserProfile
 
 
 def save_user_profile(backend, user, response, *args, **kwargs):
-    pass
+    """
+    Взаимодействие с API VK. Заполняет UserProfile при авторизации через ВК.
+    """
     if backend.name != 'vk-oauth2':
         return
     api_url = urlunparse(('https',

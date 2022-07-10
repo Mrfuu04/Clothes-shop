@@ -2,9 +2,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-# Create your views here.
 from django.urls import reverse, reverse_lazy
-from django.contrib.auth.decorators import user_passes_test
 from django.views.generic import DetailView, ListView, DeleteView, UpdateView, CreateView, TemplateView
 
 from adminapp.forms import UserAdminRegisterForm, AdminUserChange, AdminCategoryChange, \
@@ -15,10 +13,12 @@ from mainapp.models import ProductCategory, Products
 
 
 class AdminIndexView(TemplateView, SuperuserDispatchMixin, AdminContextMixin):
+    """Index страница админки"""
     template_name = 'adminapp/admin.html'
     title = 'GeekShop | Админка'
 
 
+# FBV вариант AdminIndexView
 # @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 # def index(request):
 #     context = {
@@ -28,12 +28,14 @@ class AdminIndexView(TemplateView, SuperuserDispatchMixin, AdminContextMixin):
 
 
 class AdminShowUsersView(ListView, SuperuserDispatchMixin, AdminContextMixin):
+    """Список пользователей в кастомной админке"""
     model = User
     template_name = 'adminapp/admin-users-read.html'
     title = 'Список пользователей'
     context_object_name = 'users'
 
 
+# FBV вариант AdminShowUsersView
 # @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 # def admin_show_users(request):
 #     context = {
@@ -45,6 +47,7 @@ class AdminShowUsersView(ListView, SuperuserDispatchMixin, AdminContextMixin):
 
 
 class AdminCreateUserView(CreateView, SuperuserDispatchMixin, AdminContextMixin):
+    """Создание пользователя в кастомной админке"""
     model = User
     template_name = 'adminapp/admin-users-create.html'
     title = 'Создание пользователя'
@@ -52,6 +55,7 @@ class AdminCreateUserView(CreateView, SuperuserDispatchMixin, AdminContextMixin)
     success_url = reverse_lazy('adminapp:users')
 
 
+# FBV вариант AdminCreateUserView
 # @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 # def admin_create_user(request):
 #     if request.method == 'POST':
@@ -73,6 +77,7 @@ class AdminCreateUserView(CreateView, SuperuserDispatchMixin, AdminContextMixin)
 
 
 class AdminUserUpdateView(UpdateView, SuperuserDispatchMixin, AdminContextMixin):
+    """Редактирование пользователя в кастомной админке"""
     form_class = AdminUserChange
     model = User
     template_name = 'adminapp/admin-users-update-delete.html'
@@ -80,6 +85,7 @@ class AdminUserUpdateView(UpdateView, SuperuserDispatchMixin, AdminContextMixin)
     success_url = reverse_lazy('adminapp:users')
 
 
+# FBV вариант AdminUserUpdateView
 # def admin_update_user(request, id):
 #     if request.method == 'POST':
 #         form = AdminUserChange(instance=request.user, data=request.POST, files=request.FILES)
@@ -100,6 +106,10 @@ class AdminUserUpdateView(UpdateView, SuperuserDispatchMixin, AdminContextMixin)
 
 
 class AdminUserDeleteView(DeleteView, SuperuserDispatchMixin, AdminContextMixin):
+    """
+    Удаление пользователя в кастомной админке
+    При удалении запись остается в БД, is_active переходит в False
+    """
     form_class = AdminUserChange
     model = User
     template_name = 'adminapp/admin-users-update-delete.html'
@@ -113,7 +123,7 @@ class AdminUserDeleteView(DeleteView, SuperuserDispatchMixin, AdminContextMixin)
 
         return HttpResponseRedirect(self.success_url)
 
-
+# FBV вариант AdminUserDeleteView
 # @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 # def admin_delete_user(request, id):
 #     user_select = User.objects.get(id=id)
@@ -124,6 +134,7 @@ class AdminUserDeleteView(DeleteView, SuperuserDispatchMixin, AdminContextMixin)
 
 
 class AdminCategoryView(ListView, SuperuserDispatchMixin, AdminContextMixin):
+    """Список категорий в кастомной админке"""
     template_name = 'adminapp/admin_category_read.html'
     title = 'GeekShop | Админка'
     model = ProductCategory
@@ -131,6 +142,7 @@ class AdminCategoryView(ListView, SuperuserDispatchMixin, AdminContextMixin):
     success_url = reverse_lazy('adminapp:categories')
 
 
+# FBV вариант для AdminCategoryView
 # @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 # def admin_category_show(request):
 #     context = {
@@ -142,6 +154,7 @@ class AdminCategoryView(ListView, SuperuserDispatchMixin, AdminContextMixin):
 
 
 class AdminCategoryUpdateView(UpdateView, SuperuserDispatchMixin, AdminContextMixin):
+    """Редактирование категорий в кастомной админке"""
     model = ProductCategory
     template_name = 'adminapp/admin_category_update-delete.html'
     form_class = AdminCategoryChange
@@ -150,6 +163,7 @@ class AdminCategoryUpdateView(UpdateView, SuperuserDispatchMixin, AdminContextMi
     success_url = reverse_lazy('adminapp:categories')
 
 
+# FBV вариант для AdminCategoryUpdateView
 # @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 # def admin_category_update(request, id):
 #     product_cat_select = ProductCategory.objects.get(id=id)
@@ -172,6 +186,10 @@ class AdminCategoryUpdateView(UpdateView, SuperuserDispatchMixin, AdminContextMi
 
 
 class AdminCategoryDeleteView(DeleteView, SuperuserDispatchMixin, AdminContextMixin):
+    """
+    Удаление категории в кастомной админке
+    При удалении запись остается в БД, is_active переходит в False
+    """
     model = ProductCategory
     template_name = 'adminapp/admin_category_update-delete.html'
     success_url = reverse_lazy('adminapp:categories')
@@ -184,6 +202,7 @@ class AdminCategoryDeleteView(DeleteView, SuperuserDispatchMixin, AdminContextMi
         return HttpResponseRedirect(self.success_url)
 
 
+# FBV вариант AdminCategoryDeleteView
 # @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 # def admin_category_delete(request, id):
 #     category_select = ProductCategory.objects.get(id=id)
@@ -194,6 +213,7 @@ class AdminCategoryDeleteView(DeleteView, SuperuserDispatchMixin, AdminContextMi
 
 
 class AdminCategoryCreateView(CreateView, SuperuserDispatchMixin, AdminContextMixin):
+    """Создание категории в кастомной админке"""
     model = ProductCategory
     title = 'Создание категории'
     template_name = 'adminapp/admin_category_create.html'
@@ -201,7 +221,7 @@ class AdminCategoryCreateView(CreateView, SuperuserDispatchMixin, AdminContextMi
     success_url = reverse_lazy('adminapp:categories')
 
 
-
+# FBV вариант AdminCategoryCreateView
 # @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 # def admin_category_create(request):
 #     if request.method == 'POST':
@@ -224,13 +244,14 @@ class AdminCategoryCreateView(CreateView, SuperuserDispatchMixin, AdminContextMi
 
 
 class AdminProductsShowView(ListView, SuperuserDispatchMixin, AdminContextMixin):
+    """Список товаров в кастомной админке"""
     title = 'Товары'
     model = Products
     context_object_name = 'products'
     template_name = 'adminapp/admin_products_show.html'
 
 
-
+# FBV вариант AdminProductsShowView
 # @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 # def admin_products_show(request):
 #     context = {
@@ -242,13 +263,14 @@ class AdminProductsShowView(ListView, SuperuserDispatchMixin, AdminContextMixin)
 
 
 class AdminProductCreateView(CreateView, SuperuserDispatchMixin, AdminContextMixin):
+    """Создание товара в кастомной админке"""
     title = 'Создание товара'
     template_name = 'adminapp/admin_products_create.html'
     form_class = AdminProductCreate
     model = Products
 
 
-
+# FBV вариант AdminProductCreateView
 # @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 # def admin_product_create(request):
 #     if request.method == 'POST':
@@ -271,6 +293,7 @@ class AdminProductCreateView(CreateView, SuperuserDispatchMixin, AdminContextMix
 
 
 class AdminProductChangeView(UpdateView, SuperuserDispatchMixin, AdminContextMixin):
+    """Редактирование товара в кастомной админке"""
     template_name = 'adminapp/admin_products_update-delete.html'
     title = 'Изменение товара'
     form_class = AdminProductCreate
@@ -278,7 +301,7 @@ class AdminProductChangeView(UpdateView, SuperuserDispatchMixin, AdminContextMix
     context_object_name = 'product_select'
     success_url = reverse_lazy('adminapp:admin_products_show')
 
-
+# FBV вариант AdminProductChangeView
 # @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 # def admin_product_change(request, id):
 #     product_select = Products.objects.get(id=id)
@@ -301,6 +324,10 @@ class AdminProductChangeView(UpdateView, SuperuserDispatchMixin, AdminContextMix
 
 
 class AdminProductDeleteView(DeleteView, SuperuserDispatchMixin, AdminContextMixin):
+    """
+    Удаление товара в кастомной админке
+    При удалении запись остается в БД, is_active переходит в False
+    """
     model = Products
     success_url = reverse_lazy('adminapp:admin_products_show')
 
@@ -312,6 +339,7 @@ class AdminProductDeleteView(DeleteView, SuperuserDispatchMixin, AdminContextMix
         return HttpResponseRedirect(self.success_url)
 
 
+# FBV вариант для AdminProductDeleteView
 # @user_passes_test(lambda u: u.is_superuser, login_url='/login')
 # def admin_product_delete(request, id):
 #     product_select = Products.objects.get(id=id)

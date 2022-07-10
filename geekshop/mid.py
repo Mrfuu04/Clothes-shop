@@ -1,4 +1,5 @@
 class DisableCSRFMiddleware(object):
+    """Отключает CSRF Middleware. Использовался для теста"""
 
     def __init__(self, get_response):
         self.get_response = get_response

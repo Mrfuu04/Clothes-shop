@@ -8,9 +8,11 @@ register = template.Library()
 
 @register.simple_tag()
 def get_all_categories():
+    """Возвращает все категории"""
     return get_categories()
 
 
 @register.simple_tag()
 def get_all_products():
+    """Возвращает все товары"""
     return Products.objects.all()

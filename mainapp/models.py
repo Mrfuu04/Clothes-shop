@@ -4,8 +4,9 @@ from django.db import models
 # Create your models here.
 
 class ProductCategory(models.Model):
+    """Категория"""
     class Meta:
-        verbose_name = 'категорию'
+        verbose_name = 'категория'
         verbose_name_plural = 'Категории'
 
     name = models.CharField(max_length=64, unique=True, verbose_name='Название')
@@ -18,6 +19,7 @@ class ProductCategory(models.Model):
 
 
 class Products(models.Model):
+    """Товар"""
     class Meta:
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'

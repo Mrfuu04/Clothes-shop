@@ -5,3 +5,4 @@ class AuthappConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'authapp'
     verbose_name = 'Панель пользователей'
+    verbose_name_plural = 'Панель пользователей'
