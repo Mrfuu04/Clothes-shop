@@ -16,3 +16,4 @@ DOCKER = True
 docker-compose up -d
 ```
 Запускается локальный сервер на localhost:8080
+При SERVER = False и DOCKER = False используется sqlite3, иначе Postgres
