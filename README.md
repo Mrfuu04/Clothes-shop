@@ -7,7 +7,7 @@
 * git clone git@github.com:Mrfuu04/Geekshop.git
 
 * В корневой папке создать файл .env
-* В .env задать SECRET_KEY='любое значение
+* В .env задать SECRET_KEY='любое значение'
 * Переопределить GSRegisterView.post() в authapp для отключения подтверждения по письму 
 ```
 
